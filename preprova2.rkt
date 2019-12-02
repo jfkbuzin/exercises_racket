@@ -1,0 +1,39 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname preprova2) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+(define-struct contato (nome tel registro esq dir))
+
+;;Um elemento da estrutura contato é:
+;;(make-contato nome tel registro)
+;;onde:
+;;nome: string, nome do contato
+;;tel: numero, telefone do contato
+;;registro: numero, numero de registro do contato
+;;esq e dir: esq e dir do no ou empty
+
+(define abp1(make-contato "filipe" 80845556 50  
+                               (make-contato "joao" 90856674 12 
+                                             (make-contato "joana" 90806004 7 empty empty)
+                                             (make-contato "juliana" 88886884 24 empty empty))  
+                           (make-contato "jonathan" 80796632 78 empty empty)))
+
+;;retorna-dados : numero no-contato : lista-dados
+;;obj: retorna o nome e o telefone de um condutor conforme o registro digitado
+;;exemplo: (retorna-dados 7 abp1) -> (list "joana" 90806004)
+
+(define(retorna-dados reg abp)
+  (cond
+    [(empty? abp) "nao ha contato com esse registro"]
+    [(= reg (contato-registro abp)) (cons (contato-nome abp)(cons (contato-tel abp) empty))]
+    [(< reg (contato-registro abp)) (retorna-dados reg (contato-esq abp))]
+    [else (retorna-dados reg (contato-dir abp))]))
+
+;;um lista-dados é:
+;;1 - ou empty
+;;2 - ou (cons nome tel lista-nomes)
+;;onde:
+;;nome : string, nome de um contato
+;;tel : numero, telefone de um contato
+;;lista-dados : lista-dados
+
+;custo: log(n)

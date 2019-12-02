@@ -1,0 +1,14 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname preprova4) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+;;4.  Uma página web é:
+;;(a)empty, ou
+;;(b)(cons s wp), onde
+;;sé um símbolo e
+;;wpé uma página web, ou
+;;(c)(cons ewp wp), onde
+;;ewp e wp são páginas web
+
+;A partir dessa definição de dados, desenvolva uma função que receba uma página web e um
+;símbolo e contabilize quantas ocorrências deste símbolo existem a partir da página web forne-
+;cida

@@ -1,0 +1,93 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |aula 1905|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+(define-struct infracao(numero cnh placa hora data tipo))
+
+(define-struct no-condutor(id condutor esq dir))
+(define-struct no-condutor2(nome cnh categoriaA categoriaB categoriaC categoriaD pontuacao ativo esq dir))
+
+;;um no-abp é:
+;; (define abp1(115 "arilson" 15(112 "Adelia" 4(110 "Gina" 0 empty empty)(113 "Robson" 20 empty empty))(116 "Inacio" 2 empty empty)))
+
+;;retorna-nome : numero no-abp -> string
+;;obj.: 
+;;exemplo:
+;;(retorna-nome 113 abp1) -> "Robson"
+;;(retorna-nome 113 empty) -> "Nao Encontrado" 
+;;(retorna-nome 120 abp1) -> "Nao Encontrado" 
+
+(define (retorna-nome cnh abp)
+  (cond
+    [(empty? abp) "Nao Encontrado"]
+    [(= cnh (condutor-cnh abp))(condutor-nome abp)]
+    [(< cnh (condutor-cnh abp))(retorna-nome cnh(condutor-esq abp))]
+    [else (retorna-nome cnh(condutor-dir abp))]))
+
+;;nomes-infratores : numero no-abp : lista-strings
+;;obj.:
+;;exemplo:
+;;(nomes-condutores 19 empty) -> empty
+;;(nomes-condutores 10 abp1) -> (list "Arilson" "Robson")
+;;(nomes-condutores 21 abp1) -> empty
+;;(nomes-condutores -1 abp1) -> (list "Arilson" "Adelia" "Gina" "Robson" "Inacio")
+
+(define (nomes-infratores pontos abp)
+  (cond
+    [(empty? abp) empty]
+    [(> (condutor-pontuacao abp) pontos)(cons(condutor-nome abp)(append(nomes-infratores pontos (condutor-esq abp))
+                                                                       (nomes-infratores pontos (condutor-dir abp))))]
+    [else (append(nomes-infratores pontos (condutor-esq abp))(nomes-infratores pontos (condutor-dir abp)))]))
+
+
+(define-struct funcionário (nome cargo salário equipe))
+
+; Um elemento funcionário do conjunto Funcionário é uma estrutura:
+; (make-funcionário n c s e), onde:
+; - n : String, nome do funcionário
+; - c : Símbolo, cargo do funcionário
+; - s : Número, salário em reais do funcionário
+; - e : Lista-de-funcionários
+
+; Uma Lista-de-funcionários é:
+; 1. ou empty
+; 2. ou (cons f ldf) onde:
+; - f : Funcionário
+; - ldf : Lista-de-funcionários
+
+;;2 funcoes
+
+;; Funcionários:
+(define Silvia (make-funcionário "Sílvia" 'fiscal-de-rua 4000 empty))
+(define Carlos (make-funcionário "Carlos" 'fiscal-de-rua 4500 empty))
+(define Fernando (make-funcionário "Fernando" 'fiscal-de-rua 4500 empty))
+(define Eq4 (list Silvia))
+(define Jorge (make-funcionário "Jorge" 'chefe-de-equipe 8500 Eq4))
+(define Eq3 (list Fernando Carlos))
+(define Julio (make-funcionário "Júlio" 'chefe-de-equipe 10000 Eq3))
+(define Gustavo (make-funcionário "Gustavo" 'vice-diretor 20000 empty))
+(define Eq2 (list Julio Jorge))
+(define Tatiana (make-funcionário "Tatiana" 'vice-diretor 22000 Eq2))
+(define Eq1 (list Gustavo Tatiana))
+(define Sergio (make-funcionário "Sérgio" 'diretor 30000 Eq1))
+
+;;total-salario : funcionario -> numero
+;;obj.:
+;;exemplo:
+;;(total-salario Silvia) -> 4000
+;;(total-salario Tatiana) -> 53500
+
+(define (total-salario func)
+( + (funcionario-salario func)(total-equipe(funcionario-equipe func))))
+
+;;total-equipe : lista-funcionarios -> numero
+;;obj.:
+;;
+
+(define (total-equipe ldf)
+  (cond
+    [(empty? ldf) 0]
+    [else (+ (total-salario(first ldf))(total-equipe(rest ldf)))]))
+              
+ 
+(define x 20) ;; x vale 20, valor reservado para esse nome
+(define (f y) (* x y)) ;; x já definido anteriormente

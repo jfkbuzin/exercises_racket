@@ -1,0 +1,54 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-advanced-reader.ss" "lang")((modname JosueFilipeKeglevichDeBuzin-GiovaniTirello) (read-case-sensitive #t) (teachpacks ((lib "draw.rkt" "teachpack" "htdp"))) (htdp-settings #(#t constructor repeating-decimal #t #t none #f ((lib "draw.rkt" "teachpack" "htdp")))))
+;(start 600 600)
+;(draw-solid-disk (make-posn 100 100) 5 'Blue)
+;(draw-solid-disk (make-posn 130 110) 5 'Red)
+;(draw-solid-rect (make-posn 0 200) 150 50 'Black)
+
+;(draw-solid-rect (make-posn 200 200) 10 15 'Green)
+;(draw-solid-rect (make-posn 250 250) 15 15 'Yellow)
+;(draw-solid-line (make-posn 300 300 )(make-posn 300 150)'Black)
+
+;; res-cor : simbolo -> simbolo
+
+(define-struct disco(posn1 posn2 tamobj resist))
+;
+;posn1: numero, coordenadas do objeto
+;posn2: numero, coordenadas do objeto
+;tamobj: numero, tamanho do objeto
+;resist: simbolo, pode ser 'forte ou 'fraca
+
+
+(define-struct canhao(posn))
+; 
+;posn: estrutura, coordenadas do objeto
+
+(define-struct obj(posn larg alt resist))
+;
+;posn: estrutura, coordenadas do objeto
+;larg: numero, tamanho do objeto
+;alt: numero,
+;resist: simbolo, pode ser 'dura ou 'mole
+
+(define (gera-tela)
+ (start 600 600))
+
+; (desenha-objeto (make-objeto 'bolha (make-posn 300 500) 8 0 7))
+; (desenha-objeto (make-objeto 'canhao (make-posn 300 280)  3 10 3))
+; (desenha-objeto (make-objeto 'objetos (make-posn 30 50) 5 3 5))
+; (desenha-objeto (make-objeto 'bolha (make-posn 110 50) 5 3 5))
+; (desenha-objeto (make-objeto 'objetos (make-posn 190 50) 5 3 5))
+; )
+;)
+
+(define(cria-canhao num1 num2)
+  (draw-solid-rect (make-posn num1 num2) 150 50 'Black))
+
+(define bolha1(make-disco 100 100 5 'forte))
+
+(define(cria-bolha bolha)
+  (draw-solid-rect (make-posn(disco-posn1 bolha)(disco-posn1 bolha)) (disco-tamobj bolha) 
+                   (cond
+                                                           [(symbol=? 'forte (disco-resist bolha) ) 'Red]
+                                                           [else 'Blue])))

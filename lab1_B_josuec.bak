@@ -1,0 +1,16 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname lab1_B_josuec) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+
+;;dados: string string -> string
+;;obj;; testar se login e senha estao corretos
+;;exemplo (dados "josue" "1234") -> dados foram aceitos
+;;        (dados "josue" "2222") -> senha incorreta
+;;        (dados "josh" "2222") -> login invalido
+
+(define (dados login senha)
+  (cond
+    [(and (string=? login "josue")(string=? senha "1234")) (display "dados foram aceitos")]
+    [(and (string=? login "josue")(not (string=? senha "1234"))) (display "senha incorreta")]
+    [(not (string=? login "josue")) (display "login invalido")]))
+

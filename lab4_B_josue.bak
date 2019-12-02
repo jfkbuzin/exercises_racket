@@ -1,0 +1,106 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname lab4_B_josue) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ())))
+(define-struct infracao(numero cnh placa hora data tipo))
+
+;;um elemento novo do conjunto infracao é:
+;;(make-infracao numero cnh placa hora data tipo)
+;;onde:
+;;numero: numero, numero sequencial de identificação do condutor envolvido na infração
+;;cnh: numero, numero da CNH do condutor envolvido na infração
+;;placa: string, placa do veiculo envolvido na infração
+;;hora: string, hora de ocorrencia da infração
+;;data: numero, data de ocorrencia da infração, formato AAAAMMDD
+;;tipo: simbolo, tipo de infração(leve, moderada, grave ou gravissima)
+
+(define-struct condutor(nome cnh categoriaA categoriaB categoriaC categoriaD pontuacao ativo esq dir))
+
+;;um elemento novo do conjunto condutor é:
+;;1. empty, ou
+;;2. (make-condutor nome cnh categoria pontuacao ativo)
+;;onde:
+;;nome: string, nome do condutor
+;;cnh: numero, numero da CNH do condutor
+;;categoriaA: simbolo, se a categoria de habilitacao é A(sim ou nao)
+;;categoriaB: simbolo, se a categoria de habilitacao é B(sim ou nao)
+;;categoriaC: simbolo, se a categoria de habilitacao é C(sim ou nao)
+;;categoriaD: simbolo, se a categoria de habilitacao é D(sim ou nao)
+;;pontuacao: numero, pontos na carteira do condutor
+;;ativo: , simbolo, define se o direito de dirigir está ativo ou não(sim ou nao)
+;;esq e dir: esq(menor numero de CNH) e dir(maior numero de CNH) do no
+
+(define condutores(make-condutor "filipe" 1400 'sim 'nao 'nao 'nao 7 'sim 
+                               (make-condutor "joao" 1200 'sim 'nao 'sim 'nao 3 'sim empty empty)  
+                           (make-condutor "jonathan" 1500 'nao 'sim 'nao 'sim 12 'sim empty empty) ))
+
+
+;;retorna-nome : numero condutor : string
+;;obj: retorna o nome de um condutor conforme o cnh digitado
+;;exemplo: (retorna-nome 1200 condutores) -> "joao"
+
+(define(retorna-nome cnh abp)
+  (cond
+    [(empty? abp) "nao ha condutor com esse cnh"]
+    [(= cnh (condutor-cnh abp)) (condutor-nome abp)]
+    [(< cnh (condutor-cnh abp)) (retorna-nome cnh (condutor-esq abp))]
+    [else (retorna-nome cnh (condutor-dir abp))]))
+
+;;um lista-nomes é:
+;;1 - ou empty
+;;2 - ou (cons nome lista-nomes)
+;;onde:
+;;nome : string, nome de um condutor
+;;lista-nomes : lista-nomes
+
+;;ptos-nome : numero condutor : lista-nomes
+;;obj: retorna os nomes de todos os condutores que tenham pontuação acima de um determinado valor passado como parâmetro
+;;exemplo:
+;;(ptos-nome 5 condutores) -> (cons "filipe"(cons "jonathan" empty))
+
+(define(ptos-nome ptos abp)
+  (cond
+    [(empty? abp) empty]
+    [(< ptos (condutor-pontuacao abp)) (cons(condutor-nome abp)(append(ptos-nome ptos (condutor-esq abp))
+                                                                      (ptos-nome ptos (condutor-dir abp))))]
+    [else (ptos-nome ptos (condutor-dir abp))]))
+
+
+(define-struct funcionário (nome cargo salário equipe))
+
+; Um elemento funcionário do conjunto Funcionário é uma estrutura:
+; (make-funcionário n c s e), onde:
+; - n : String, nome do funcionário
+; - c : Símbolo, cargo do funcionário
+; - s : Número, salário em reais do funcionário
+; - e : Lista-de-funcionários
+
+; Uma Lista-de-funcionários é:
+; 1. ou empty
+; 2. ou (cons f ldf) onde:
+; - f : Funcionário
+; - ldf : Lista-de-funcionários
+
+;; Funcionários:
+(define Silvia (make-funcionário "Sílvia" 'fiscal-de-rua 4000 empty))
+(define Carlos (make-funcionário "Carlos" 'fiscal-de-rua 4500 empty))
+(define Fernando (make-funcionário "Fernando" 'fiscal-de-rua 4500 empty))
+(define Eq4 (list Silvia))
+(define Jorge (make-funcionário "Jorge" 'chefe-de-equipe 8500 Eq4))
+(define Eq3 (list Fernando Carlos))
+(define Julio (make-funcionário "Júlio" 'chefe-de-equipe 10000 Eq3))
+(define Gustavo (make-funcionário "Gustavo" 'vice-diretor 20000 empty))
+(define Eq2 (list Julio Jorge))
+(define Tatiana (make-funcionário "Tatiana" 'vice-diretor 22000 Eq2))
+(define Eq1 (list Gustavo Tatiana))
+(define Sergio (make-funcionário "Sérgio" 'diretor 30000 Eq1))
+
+;;total-gasto : funcionario lista-de-funcionarios: numero
+;;obj: mostrar o total de pagamento de salario gasto com os funcionarios de uma hierarquia
+;;exemplo:
+;;(total-gasto Sergio)
+
+(define(total-gasto f)
+  (cond
+    [(empty? f) 0]
+    [else (+ (funcionário-salário f)(+ (total-gasto (funcionário-salário(first funcionario-equipe)))
+                                         (total-gasto (funcionário-salário(rest funcionario-equipe)))))]))
